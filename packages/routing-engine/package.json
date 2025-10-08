@@ -1,0 +1,9 @@
+{
+  "name": "routing-engine",
+  "version": "0.1.0",
+  "main": "index.ts",
+  "private": true,
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

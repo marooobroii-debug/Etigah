@@ -1,2 +1,2 @@
-# Etigah
-Etigah local navigation system
+# Etegah
+ Etegah project local navigation

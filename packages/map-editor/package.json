@@ -1,0 +1,9 @@
+{
+  "name": "map-editor",
+  "version": "0.1.0",
+  "main": "index.tsx",
+  "private": true,
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
