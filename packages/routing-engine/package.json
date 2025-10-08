@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "main": "index.ts",
   "private": true,
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "preview": "echo 'No preview for package'"
+  },
   "devDependencies": {
     "typescript": "^5.0.0"
   }
