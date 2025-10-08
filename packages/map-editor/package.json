@@ -9,9 +9,12 @@
     "preview": "echo 'No preview for package'"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15"
   },
   "dependencies": {
-    "react": "^19.2.0"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   }
 }
