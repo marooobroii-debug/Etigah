@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-
-const App = () => <div>Admin Dashboard</div>;
+import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<App />);

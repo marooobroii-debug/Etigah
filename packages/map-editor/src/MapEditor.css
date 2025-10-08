@@ -1,0 +1,64 @@
+.map-editor-root {
+  display: flex;
+  min-height: 400px;
+  background: #f1f5f9;
+  border-radius: 1rem;
+  box-shadow: 0 2px 16px #cbd5e1;
+  overflow: hidden;
+}
+
+.map-editor-sidebar {
+  width: 220px;
+  background: #fff;
+  padding: 1.5rem 1rem;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sidebar-section {
+  margin-bottom: 1.5rem;
+}
+
+.upload-btn, .add-btn, .qr-btn {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0;
+  border: none;
+  border-radius: 0.5rem;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.upload-btn:hover, .add-btn:hover, .qr-btn:hover {
+  background: #1e40af;
+}
+
+.node-list, .edge-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.map-editor-canvas {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e0e7ef;
+  position: relative;
+}
+
+.canvas-placeholder {
+  color: #64748b;
+  font-size: 1.1rem;
+  padding: 2rem 3rem;
+  border: 2px dashed #cbd5e1;
+  border-radius: 1rem;
+  background: #f8fafc;
+}
