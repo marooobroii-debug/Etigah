@@ -45,20 +45,51 @@
   font-size: 0.95rem;
 }
 
+
 .map-editor-canvas {
   flex: 1;
+  min-height: 500px;
+  min-width: 600px;
+  background: #e0e7ef;
+  border-radius: 1rem;
+  margin: 2rem;
+  position: relative;
+  box-shadow: 0 2px 16px #cbd5e1;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #e0e7ef;
-  position: relative;
 }
 
 .canvas-placeholder {
   color: #64748b;
-  font-size: 1.1rem;
-  padding: 2rem 3rem;
-  border: 2px dashed #cbd5e1;
+  font-size: 1.2rem;
+  padding: 2.5rem 3.5rem;
+  border: 2px dashed #2563eb;
   border-radius: 1rem;
   background: #f8fafc;
+  opacity: 0.95;
+  text-align: center;
+  box-shadow: 0 2px 8px #cbd5e1;
+}
+
+.editor-node {
+  width: 32px;
+  height: 32px;
+  background: #2563eb;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px #2563eb44;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: grab;
+  transition: box-shadow 0.2s, transform 0.2s;
+  user-select: none;
+}
+.editor-node:active {
+  box-shadow: 0 4px 16px #2563eb88;
+  transform: scale(1.08);
 }
