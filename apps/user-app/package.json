@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/runtime": "^7.28.4",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.1",
     "firebase": "^12.3.0",
