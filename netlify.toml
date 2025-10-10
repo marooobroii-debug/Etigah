@@ -1,7 +1,7 @@
 [build]
   base = "apps/user-app"
   publish = "dist"
-  command = "npm run build"
+  command = "npm install --include=dev && npm run build"
   functions = "netlify/functions"
 
 [context.production.environment]
