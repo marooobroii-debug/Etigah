@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
 .sidebar-nav .nav-link:focus,
 .sidebar-nav .nav-link:active {
   outline: 2px solid #2563eb;
@@ -60,7 +63,6 @@
 .logo-toggle-btn:hover {
   color: #2563eb;
 }
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
 body, html, #root {
   height: 100%;

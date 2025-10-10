@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { User as FirebaseUser } from 'firebase/auth';
 import { auth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, User } from './firebase';
 import './App.css';
+import { useMediaQuery } from 'react-responsive';
 import { AnimatePresence, motion } from 'framer-motion';
 import { findRoute } from '../../../packages/routing-engine/src/index';
 
@@ -197,7 +198,8 @@ const App: React.FC = () => {
 
   // Logo toggle handler
   const toggleLogo = () => setLogoMode((m) => (m === 'black' ? 'white' : 'black'));
-  const logoSrc = logoMode === 'black' ? '/images/logo_black.png' : '/images/logo_white.png';
+  const logoSrc = logoMode === 'black' ? '/logo_black.png' : '/logo_white.png';
+  const isMobile = useMediaQuery({ maxWidth: 700 });
 
   // Show active route/session state
   const [activeRoute, setActiveRoute] = useState<ActiveRoute | null>(null);
@@ -231,9 +233,9 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="app-root">
-      {/* Sidebar Navigation (future: add nav links) */}
-      <aside className="sidebar-nav">
+    <div className={`app-root${isMobile ? ' mobile' : ''}`}> 
+      {/* Sidebar Navigation */}
+      <aside className={`sidebar-nav${isMobile ? ' mobile' : ''}`}> 
         <img src={logoSrc} alt="Etigah Logo" className="logo sidebar-logo" />
         <button className="logo-toggle-btn" onClick={toggleLogo} aria-label="Toggle logo color">
           {logoMode === 'black' ? '🌙' : '☀️'}
@@ -243,6 +245,8 @@ const App: React.FC = () => {
             <li><a href="#" className="nav-link active">Map</a></li>
             <li><a href="#" className="nav-link">History</a></li>
             <li><a href="#" className="nav-link">Settings</a></li>
+            {/* Multi-floor/building selector UI */}
+            <li className="nav-link special"><span role="img" aria-label="Floors">🏢</span> Floors</li>
           </ul>
         </nav>
       </aside>
@@ -265,6 +269,18 @@ const App: React.FC = () => {
           <AnimatePresence>
             <MapView marker={marker} routePath={routePath} animateMarker={animateMarker} />
           </AnimatePresence>
+          {/* Multi-floor/building selector UI (future) */}
+          <div className="floor-selector-bar">
+            <span className="floor-label">Building:</span>
+            <select className="floor-select"><option>Main</option></select>
+            <span className="floor-label">Floor:</span>
+            <select className="floor-select"><option>1</option><option>2</option></select>
+          </div>
+          {/* Route History UI (future) */}
+          <div className="route-history-bar">
+            <span className="history-label">Recent Routes:</span>
+            <ul className="history-list"><li>NODE_1 → NODE_DEST</li></ul>
+          </div>
           {/* Active Route/Session State UI */}
           {activeRoute && activeRoute.status === 'active' && (
             <div className="route-session-bar" style={{marginTop: 16, marginBottom: 8, background: '#f8fafc', borderRadius: 12, boxShadow: '0 2px 8px #cbd5e1', padding: 12, maxWidth: 400}}>
