@@ -1,0 +1,6 @@
+{
+  "appId": "com.etigah.app",
+  "appName": "etigah",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
