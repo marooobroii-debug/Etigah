@@ -1,12 +1,13 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
+
+/* --- Accessibility & Focus States --- */
 .sidebar-nav .nav-link:focus,
 .sidebar-nav .nav-link:active {
   outline: 2px solid #2563eb;
   outline-offset: 2px;
 }
-
 .auth-btn:focus,
 .auth-btn:active,
 .qr-btn:focus,
@@ -16,6 +17,222 @@
   outline: 2px solid #fbbf24;
   outline-offset: 2px;
 }
+
+/* --- Modern Sidebar --- */
+.sidebar-nav {
+  background: #fff;
+  box-shadow: 2px 0 16px #e0e7ef80;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0 1rem 0;
+  min-height: 100vh;
+  z-index: 2;
+  border-radius: 0 2rem 2rem 0;
+  transition: width 0.2s;
+}
+.sidebar-nav.mobile {
+  flex-direction: row;
+  width: 100vw;
+  min-height: unset;
+  height: 64px;
+  padding: 0 1rem;
+  box-shadow: 0 2px 8px #e0e7ef80;
+  border-radius: 0 0 2rem 2rem;
+}
+.sidebar-logo {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 2rem;
+  border-radius: 1rem;
+  background: #f8fafc;
+  box-shadow: 0 2px 8px #e0e7ef40;
+}
+.sidebar-nav nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.sidebar-nav.mobile nav ul {
+  flex-direction: row;
+  gap: 0.5rem;
+}
+.sidebar-nav .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  color: #64748b;
+  text-decoration: none;
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.sidebar-nav .nav-link.active,
+.sidebar-nav .nav-link:hover {
+  background: #2563eb10;
+  color: #2563eb;
+}
+.sidebar-nav .nav-link.special {
+  background: #fbbf2410;
+  color: #fbbf24;
+  font-weight: 700;
+  margin-top: 1rem;
+}
+
+/* --- Main Content Modernization --- */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
+  min-height: 100vh;
+  border-radius: 2rem 0 0 2rem;
+  box-shadow: 0 0 32px #e0e7ef40;
+}
+.app-header {
+  text-align: center;
+  padding: 2rem 0 1rem 0;
+  width: 100%;
+  max-width: 600px;
+  background: none;
+}
+.logo {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 2px 8px #b6c6e2);
+  border-radius: 1rem;
+}
+h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0.2rem 0;
+  letter-spacing: -1px;
+}
+.subtitle {
+  color: #64748b;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+.auth-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.auth-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 1rem;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px #2563eb30;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.auth-btn:hover {
+  background: #1746a2;
+  box-shadow: 0 4px 16px #2563eb40;
+}
+.user-email {
+  color: #1e293b;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* --- Floor Selector & History --- */
+.floor-selector-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0 0.5rem 0;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px #cbd5e1;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+.floor-label {
+  color: #64748b;
+  font-weight: 500;
+}
+.floor-select {
+  border: 1px solid #e0e7ef;
+  border-radius: 0.5rem;
+  padding: 0.2rem 0.7rem;
+  font-size: 1rem;
+  background: #f8fafc;
+  color: #1e293b;
+}
+.route-history-bar {
+  margin: 0.5rem 0 1rem 0;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px #cbd5e1;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.history-label {
+  color: #64748b;
+  font-weight: 500;
+}
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.5rem;
+}
+.history-list li {
+  color: #2563eb;
+  font-weight: 600;
+  background: #e0e7ef;
+  border-radius: 0.5rem;
+  padding: 0.2rem 0.7rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 700px) {
+  .app-root {
+    flex-direction: column;
+    border-radius: 0;
+  }
+  .sidebar-nav {
+    border-radius: 0 0 2rem 2rem;
+  }
+  .main-content {
+    border-radius: 2rem 2rem 0 0;
+    min-height: 80vh;
+  }
+  .app-header {
+    padding: 1rem 0 0.5rem 0;
+  }
+}
+
+/* --- Comments for future advanced features --- */
+/*
+  - Add GSAP/Lottie animations for marker and path
+  - Add accessibility improvements (aria, TTS, vibration)
+  - Add advanced map controls (zoom, pan, 3D)
+  - Add offline/PWA support (service worker, IndexedDB)
+  - Add settings modal and route history logic
+*/
 
 @media (max-width: 700px) {
   .app-root {
