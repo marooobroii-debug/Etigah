@@ -11,7 +11,8 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      if ('serviceWorker' in navigator) {
+      // Only register service worker in production to avoid CORS/fetch errors in Codespaces
+      if (location.hostname !== 'localhost' && !location.hostname.endsWith('.dev') && 'serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/service-worker.js');
         });

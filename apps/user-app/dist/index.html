@@ -6,13 +6,14 @@
     <title>Direction User App</title>
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#2563eb" />
-    <script type="module" crossorigin src="/assets/index-BS1TeP2V.js"></script>
+    <script type="module" crossorigin src="/assets/index-B1Wh0Soy.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-Dz3BQwQK.css">
   </head>
   <body>
     <div id="root"></div>
     <script>
-      if ('serviceWorker' in navigator) {
+      // Only register service worker in production to avoid CORS/fetch errors in Codespaces
+      if (location.hostname !== 'localhost' && !location.hostname.endsWith('.dev') && 'serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/service-worker.js');
         });

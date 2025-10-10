@@ -3,14 +3,16 @@
     "framer-motion": "^12.23.22",
     "gsap": "^3.13.0",
     "lottie-react": "^2.4.1",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-responsive": "^10.0.1"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+  "react-responsive": "^10.0.1",
+  "react-qr-scanner": "^1.0.0-alpha.11"
   },
   "devDependencies": {
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.1",
     "@types/react-responsive": "^9.0.0",
+    "@vitejs/plugin-react": "^5.0.4",
     "typescript": "^5.9.3"
   }
 }
