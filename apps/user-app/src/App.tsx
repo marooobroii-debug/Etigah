@@ -52,6 +52,12 @@ const MapView: React.FC<{
   routePath?: string[];
   animateMarker?: boolean;
 }> = ({ marker, routePath, animateMarker }) => {
+  // --- Zoom & Pan State ---
+  const [zoom, setZoom] = React.useState(1);
+  const [offset, setOffset] = React.useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = React.useState(false);
+  const [dragStart, setDragStart] = React.useState<{ x: number; y: number } | null>(null);
+
   // Compute path points for SVG polyline
   const points = routePath && routePath.length > 1
     ? routePath.map((n) => {
@@ -68,6 +74,25 @@ const MapView: React.FC<{
     if (last) markerPos = { x: last.x, y: last.y };
   }
 
+  // --- Pan Handlers ---
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setDragging(true);
+    setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+  };
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!dragging || !dragStart) return;
+    setOffset({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
+  };
+  const handleMouseUp = () => setDragging(false);
+
+  // --- Zoom Handlers ---
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    let newZoom = zoom - e.deltaY * 0.001;
+    newZoom = Math.max(0.5, Math.min(2.5, newZoom));
+    setZoom(newZoom);
+  };
+
   return (
     <motion.div
       className="map-container"
@@ -75,33 +100,54 @@ const MapView: React.FC<{
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onWheel={handleWheel}
+      style={{ cursor: dragging ? 'grabbing' : 'grab', overflow: 'hidden' }}
     >
-      <img src={MAP_IMAGE} alt="Floorplan" className="map-image" />
-      {/* Route path as animated SVG polyline */}
-      {points && (
-        <svg className="route-svg" width="100%" height="100%" style={{ position: 'absolute', left: 0, top: 0, zIndex: 2 }}>
-          <polyline
-            points={points}
-            fill="none"
-            stroke="#2563eb"
-            strokeWidth={6}
-            strokeDasharray="12 8"
-            style={{ filter: 'drop-shadow(0 2px 8px #2563eb88)' }}
-          />
-        </svg>
-      )}
-      {/* Animated marker */}
-      {markerPos && (
-        <motion.div
-          className="user-marker"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.7, type: 'spring', stiffness: 300 }}
-          style={{ left: `${markerPos.x}%`, top: `${markerPos.y}%` }}
-        >
-          <span role="img" aria-label="User">📍</span>
-        </motion.div>
-      )}
+      <div
+        style={{
+          transform: `scale(${zoom}) translate(${offset.x / zoom}px, ${offset.y / zoom}px)`,
+          transition: dragging ? 'none' : 'transform 0.2s',
+          width: '100%',
+          height: '100%',
+          position: 'relative',
+        }}
+      >
+        <img src={MAP_IMAGE} alt="Floorplan" className="map-image" />
+        {/* Route path as animated SVG polyline */}
+        {points && (
+          <svg className="route-svg" width="100%" height="100%" style={{ position: 'absolute', left: 0, top: 0, zIndex: 2 }}>
+            <polyline
+              points={points}
+              fill="none"
+              stroke="#2563eb"
+              strokeWidth={6}
+              strokeDasharray="12 8"
+              style={{ filter: 'drop-shadow(0 2px 8px #2563eb88)' }}
+            />
+          </svg>
+        )}
+        {/* Animated marker */}
+        {markerPos && (
+          <motion.div
+            className="user-marker"
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.7, type: 'spring', stiffness: 300 }}
+            style={{ left: `${markerPos.x}%`, top: `${markerPos.y}%` }}
+          >
+            <span role="img" aria-label="User">📍</span>
+          </motion.div>
+        )}
+      </div>
+      {/* Zoom Controls */}
+      <div style={{ position: 'absolute', right: 16, bottom: 16, zIndex: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <button aria-label="Zoom in" style={{ fontSize: 24, borderRadius: 8, border: 'none', background: '#fff', boxShadow: '0 2px 8px #cbd5e1', cursor: 'pointer', marginBottom: 4 }} onClick={() => setZoom(z => Math.min(2.5, z + 0.1))}>+</button>
+        <button aria-label="Zoom out" style={{ fontSize: 24, borderRadius: 8, border: 'none', background: '#fff', boxShadow: '0 2px 8px #cbd5e1', cursor: 'pointer' }} onClick={() => setZoom(z => Math.max(0.5, z - 0.1))}>-</button>
+      </div>
     </motion.div>
   );
 };
@@ -109,6 +155,19 @@ const MapView: React.FC<{
 
 
 import QrScanner from 'react-qr-scanner';
+import Lottie from 'lottie-react';
+import qrSuccessAnim from './qr-success.json';
+// import gsap from 'gsap'; // For future GSAP marker/path animation
+// For vibration and TTS
+const vibrate = (pattern: number | number[]) => {
+  if (navigator.vibrate) navigator.vibrate(pattern);
+};
+const speak = (text: string) => {
+  if ('speechSynthesis' in window) {
+    const utter = new window.SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(utter);
+  }
+};
 
 const App: React.FC = () => {
   const user = useAuth();
@@ -116,6 +175,11 @@ const App: React.FC = () => {
   const [marker, setMarker] = useState<{ x: number; y: number } | undefined>(undefined);
   const [qrResult, setQrResult] = useState<string | null>(null);
   const [logoMode, setLogoMode] = useState<'black' | 'white'>('black');
+  // Multi-building/floor state
+  const [building, setBuilding] = useState('Main');
+  const [floor, setFloor] = useState('1');
+  // Route history state
+  const [routeHistory, setRouteHistory] = useState<{start: string, end: string, completed: boolean, timestamp: number}[]>([]);
 
 
   // --- QR-based Positioning & Session Management ---
@@ -157,11 +221,22 @@ const App: React.FC = () => {
   function clearActiveRoute() {
     localStorage.removeItem('activeRoute');
   }
+  // Route history helpers
+  function saveRouteHistory(history: {start: string, end: string, completed: boolean, timestamp: number}[]) {
+    localStorage.setItem('routeHistory', JSON.stringify(history));
+  }
+  function loadRouteHistory() {
+    const raw = localStorage.getItem('routeHistory');
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch { return []; }
+  }
 
   // Handle QR scan
   const handleScan = (result: { text?: string } | null) => {
     if (result && result.text) {
       setQrResult(result.text);
+      vibrate([50, 30, 50]);
+      speak('QR code scanned.');
       const node = parseQR(result.text);
       if (node) {
         // Simulate marker position (replace with real map logic)
@@ -177,6 +252,11 @@ const App: React.FC = () => {
             status: 'active'
           };
           saveActiveRoute(newRoute);
+          // Add to route history
+          const history = loadRouteHistory();
+          history.unshift({start: node.n, end: 'NODE_DEST', completed: false, timestamp: Date.now()});
+          saveRouteHistory(history.slice(0, 10));
+          setRouteHistory(history.slice(0, 10));
         } else {
           // Resume or recalibrate: update startNode and timestamp
           const updated: ActiveRoute = {
@@ -205,6 +285,7 @@ const App: React.FC = () => {
   const [activeRoute, setActiveRoute] = useState<ActiveRoute | null>(null);
   useEffect(() => {
     setActiveRoute(loadActiveRoute());
+    setRouteHistory(loadRouteHistory());
   }, [qrResult]);
 
   const handleClearRoute = () => {
@@ -216,6 +297,13 @@ const App: React.FC = () => {
     if (activeRoute) {
       saveActiveRoute({ ...activeRoute, status: 'completed', lastUpdated: Date.now() });
       setActiveRoute(loadActiveRoute());
+      // Mark last route as completed in history
+      const history = loadRouteHistory();
+      if (history.length > 0 && history[0].start === activeRoute.startNode && history[0].end === activeRoute.endNode) {
+        history[0].completed = true;
+        saveRouteHistory(history);
+        setRouteHistory(history);
+      }
     }
   };
 
@@ -233,14 +321,14 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className={`app-root${isMobile ? ' mobile' : ''}`}> 
+  <div className={`app-root${isMobile ? ' mobile' : ''}`} role="main" aria-label="Etigah Navigation App"> 
       {/* Sidebar Navigation */}
-      <aside className={`sidebar-nav${isMobile ? ' mobile' : ''}`}> 
+  <aside className={`sidebar-nav${isMobile ? ' mobile' : ''}`} aria-label="Sidebar Navigation"> 
         <img src={logoSrc} alt="Etigah Logo" className="logo sidebar-logo" />
         <button className="logo-toggle-btn" onClick={toggleLogo} aria-label="Toggle logo color">
           {logoMode === 'black' ? '🌙' : '☀️'}
         </button>
-        <nav>
+  <nav aria-label="Main Navigation">
           <ul>
             <li><a href="#" className="nav-link active">Map</a></li>
             <li><a href="#" className="nav-link">History</a></li>
@@ -250,8 +338,8 @@ const App: React.FC = () => {
           </ul>
         </nav>
       </aside>
-      <div className="main-content">
-        <header className="app-header">
+  <div className="main-content" tabIndex={0} aria-label="Main Content Area">
+  <header className="app-header" aria-label="App Header">
           <h1>Etigah Navigation</h1>
           <p className="subtitle">Smart Indoor Guidance System</p>
           <div className="auth-bar">
@@ -265,21 +353,34 @@ const App: React.FC = () => {
             )}
           </div>
         </header>
-        <main>
+  <main tabIndex={0} aria-label="Map and Navigation Area">
           <AnimatePresence>
             <MapView marker={marker} routePath={routePath} animateMarker={animateMarker} />
           </AnimatePresence>
           {/* Multi-floor/building selector UI (future) */}
-          <div className="floor-selector-bar">
+          <div className="floor-selector-bar" aria-label="Floor and Building Selector">
             <span className="floor-label">Building:</span>
-            <select className="floor-select"><option>Main</option></select>
+            <select className="floor-select" value={building} onChange={e => setBuilding(e.target.value)}>
+              <option>Main</option>
+              <option>Annex</option>
+            </select>
             <span className="floor-label">Floor:</span>
-            <select className="floor-select"><option>1</option><option>2</option></select>
+            <select className="floor-select" value={floor} onChange={e => setFloor(e.target.value)}>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+            </select>
           </div>
-          {/* Route History UI (future) */}
-          <div className="route-history-bar">
+          <div className="route-history-bar" aria-label="Route History">
             <span className="history-label">Recent Routes:</span>
-            <ul className="history-list"><li>NODE_1 → NODE_DEST</li></ul>
+            <ul className="history-list">
+              {routeHistory.length === 0 && <li>No routes yet</li>}
+              {routeHistory.map((r, i) => (
+                <li key={i} style={{opacity: r.completed ? 0.5 : 1}}>
+                  {r.start} → {r.end} {r.completed && <span style={{color:'#22c55e'}}>✔</span>}
+                </li>
+              ))}
+            </ul>
           </div>
           {/* Active Route/Session State UI */}
           {activeRoute && activeRoute.status === 'active' && (
@@ -324,7 +425,10 @@ const App: React.FC = () => {
           )}
           {qrResult && (
             <motion.div className="qr-result" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ opacity: 0 }}>
-              QR: {qrResult}
+              <div style={{ width: 80, margin: '0 auto' }}>
+                <Lottie animationData={qrSuccessAnim} loop={false} style={{ width: 80, height: 80 }} />
+              </div>
+              <div style={{ marginTop: 8 }}>QR: {qrResult}</div>
             </motion.div>
           )}
         </main>

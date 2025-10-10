@@ -44,8 +44,8 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-gray-100 to-blue-100">
-      <header className="w-full max-w-2xl mx-auto text-center py-8">
+    <div className="admin-root" role="main" aria-label="Etigah Admin Dashboard">
+      <header className="admin-header" aria-label="Dashboard Header">
         <Logo className="w-20 h-20 mx-auto mb-2" />
         <h1 className="text-3xl font-bold text-gray-900 mb-1">Etigah Admin Dashboard</h1>
         <p className="text-gray-500 mb-4">Map & Data Management</p>
@@ -58,14 +58,46 @@ const App: React.FC = () => {
           ) : null}
         </div>
       </header>
-      <main className="flex-1 w-full flex flex-col items-center">
+      <main className="admin-main" tabIndex={0} aria-label="Main Content Area">
         {user ? (
-          <section className="w-full max-w-4xl bg-white rounded-2xl shadow-xl p-8 mt-4">
-            <h2 className="text-xl font-semibold mb-4">Map Editor</h2>
-            <MapEditor />
-          </section>
+          <>
+            <section className="admin-section bg-white rounded-2xl shadow-xl p-8 mt-4">
+              <h2 className="text-xl font-semibold mb-4">Map Editor</h2>
+              <MapEditor />
+            </section>
+            <section className="admin-section bg-white rounded-2xl shadow-xl p-8 mt-4">
+              <h2 className="text-xl font-semibold mb-4">QR Code Management</h2>
+              <div className="flex gap-4 flex-wrap">
+                <button className="admin-btn">Generate All QR Codes</button>
+                <button className="admin-btn">Export as PDF</button>
+                <span className="text-gray-400">(Coming soon: QR usage analytics)</span>
+              </div>
+            </section>
+            <section className="admin-section bg-white rounded-2xl shadow-xl p-8 mt-4">
+              <h2 className="text-xl font-semibold mb-4">User & Role Management</h2>
+              <div className="flex gap-4 flex-wrap">
+                <button className="admin-btn">Add User</button>
+                <button className="admin-btn">Manage Roles</button>
+                <span className="text-gray-400">(Coming soon: Activity logs, access control)</span>
+              </div>
+            </section>
+            <section className="admin-section bg-white rounded-2xl shadow-xl p-8 mt-4">
+              <h2 className="text-xl font-semibold mb-4">Analytics Dashboard</h2>
+              <div className="flex gap-4 flex-wrap">
+                <span className="text-gray-400">(Coming soon: Charts for node visits, frequent paths, QR scans, etc.)</span>
+              </div>
+            </section>
+            <section className="admin-section bg-white rounded-2xl shadow-xl p-8 mt-4">
+              <h2 className="text-xl font-semibold mb-4">Version Control & Backup</h2>
+              <div className="flex gap-4 flex-wrap">
+                <button className="admin-btn">Backup Now</button>
+                <button className="admin-btn">Restore Version</button>
+                <span className="text-gray-400">(Coming soon: Automatic backups, version history)</span>
+              </div>
+            </section>
+          </>
         ) : (
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 mt-8 flex flex-col items-center">
+          <div className="admin-auth bg-white rounded-2xl shadow-xl p-8 mt-8 flex flex-col items-center">
             <Logo className="w-16 h-16 mb-4" />
             <h2 className="text-2xl font-bold mb-2">{showSignup ? 'Sign Up' : 'Sign In'}</h2>
             <form className="w-full flex flex-col gap-3" onSubmit={signIn}>
