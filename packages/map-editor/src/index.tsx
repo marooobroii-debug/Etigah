@@ -1,18 +1,18 @@
 
 
-import { useRef, useState } from 'react';
+import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import QRCode from 'qrcode';
 import jsPDF from 'jspdf';
 
 
-export const MapEditor: React.FC = () => {
+export const MapEditor = forwardRef((_props, ref) => {
 	const [floorplan, setFloorplan] = useState<string | null>(null);
 	const [nodes, setNodes] = useState<{ id: string; x: number; y: number }[]>([]);
 	const [edges, setEdges] = useState<{ from: string; to: string }[]>([]);
 		const [draggedNode, setDraggedNode] = useState<string | null>(null);
 		const [qrImages, setQrImages] = useState<Record<string, string>>({});
-	// Generate QR codes for all nodes
-	const handleGenerateQRCodes = async () => {
+		// Generate QR codes for all nodes
+		const handleGenerateQRCodes = async () => {
 		const images: Record<string, string> = {};
 		for (const node of nodes) {
 			// Example QR data: { n: nodeId, b: 'BLDG_A', f: 1 }
@@ -22,8 +22,12 @@ export const MapEditor: React.FC = () => {
 		setQrImages(images);
 	};
 
-	// Export all QR codes as PDF
-	const handleExportQRCodesPDF = async () => {
+		// Export all QR codes as PDF
+		const handleExportQRCodesPDF = async () => {
+	useImperativeHandle(ref, () => ({
+		handleGenerateQRCodes,
+		handleExportQRCodesPDF
+	}));
 		if (Object.keys(qrImages).length === 0) await handleGenerateQRCodes();
 		const doc = new jsPDF();
 		let y = 10;
@@ -191,4 +195,4 @@ export const MapEditor: React.FC = () => {
 			</section>
 		</div>
 	);
-};
+});

@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { MapEditor } from '../../../packages/map-editor/src/index';
+import UserRoleManager from './components/UserRoleManager';
+import AnalyticsDashboard from './components/AnalyticsDashboard';
+import VersionManager from './components/VersionManager';
+import { useRef } from 'react';
 import Logo from './components/Logo';
 import './App.css';
 import { auth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from './firebase';
@@ -7,6 +11,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 
 const App: React.FC = () => {
   const [user, setUser] = useState<any>(null);
+  const mapEditorRef = useRef<any>(null);
   const [showSignup, setShowSignup] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -63,37 +68,26 @@ const App: React.FC = () => {
           <>
             <section className="admin-section bg-white rounded-2xl shadow-xl p-8 mt-4">
               <h2 className="text-xl font-semibold mb-4">Map Editor</h2>
-              <MapEditor />
+              <MapEditor ref={mapEditorRef} />
             </section>
             <section className="admin-section bg-white rounded-2xl shadow-xl p-8 mt-4">
               <h2 className="text-xl font-semibold mb-4">QR Code Management</h2>
               <div className="flex gap-4 flex-wrap">
-                <button className="admin-btn">Generate All QR Codes</button>
-                <button className="admin-btn">Export as PDF</button>
-                <span className="text-gray-400">(Coming soon: QR usage analytics)</span>
+                <button className="admin-btn" onClick={() => mapEditorRef.current?.handleGenerateQRCodes?.()}>Generate All QR Codes</button>
+                <button className="admin-btn" onClick={() => mapEditorRef.current?.handleExportQRCodesPDF?.()}>Export as PDF</button>
               </div>
             </section>
             <section className="admin-section bg-white rounded-2xl shadow-xl p-8 mt-4">
               <h2 className="text-xl font-semibold mb-4">User & Role Management</h2>
-              <div className="flex gap-4 flex-wrap">
-                <button className="admin-btn">Add User</button>
-                <button className="admin-btn">Manage Roles</button>
-                <span className="text-gray-400">(Coming soon: Activity logs, access control)</span>
-              </div>
+              <UserRoleManager />
             </section>
             <section className="admin-section bg-white rounded-2xl shadow-xl p-8 mt-4">
               <h2 className="text-xl font-semibold mb-4">Analytics Dashboard</h2>
-              <div className="flex gap-4 flex-wrap">
-                <span className="text-gray-400">(Coming soon: Charts for node visits, frequent paths, QR scans, etc.)</span>
-              </div>
+              <AnalyticsDashboard />
             </section>
             <section className="admin-section bg-white rounded-2xl shadow-xl p-8 mt-4">
               <h2 className="text-xl font-semibold mb-4">Version Control & Backup</h2>
-              <div className="flex gap-4 flex-wrap">
-                <button className="admin-btn">Backup Now</button>
-                <button className="admin-btn">Restore Version</button>
-                <span className="text-gray-400">(Coming soon: Automatic backups, version history)</span>
-              </div>
+              <VersionManager />
             </section>
           </>
         ) : (
